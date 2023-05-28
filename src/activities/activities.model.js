@@ -6,6 +6,11 @@ const schema = new mongoose.Schema({
     "likes": { type: [String], default: [] },
     "description": { type: String, required: true },
     "image": {type: String},
+    "position": {
+        "longitude": {type: Number},
+        "latitude": {type: Number}
+    },
+    "city": {type: String, required: true},
     "id_owner": {type:String, required: true}
 })
 
