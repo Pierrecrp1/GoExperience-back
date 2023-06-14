@@ -48,16 +48,23 @@ class activitiesController {
     }
 
     async likeActivity(req, res) {
-        await model
-        .findOneAndUpdate({ _id: req.params.activityId }, { $push: { likes: req.body.userId } },)
-        .then((activityUpdated) => {
-          res.send(activityUpdated);
-        })
-        .catch((err) => {
-          res.send(err);
-        });
-    }
+      try {
+        const activity = await model.findOne({ _id: req.params.activityId });
+    
+        if (activity.likes.includes(req.body.userId)) {
+          activity.likes.pull(req.body.userId);
+        }
 
+        else {
+          activity.likes.push(req.body.userId);
+        }
+        
+        const activityUpdated = await activity.save();
+        res.send(activityUpdated);
+      } catch (err) {
+        res.status(500).send(err);
+      }
+    }
 }
 
 module.exports = activitiesController;
