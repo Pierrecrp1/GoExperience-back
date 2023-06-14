@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const express = require('express');
 var cors = require('cors');
+const axios = require('axios');
 
 const app = express();
 app.use(express.json());
@@ -45,6 +46,28 @@ app.use('/api/activities', activities)
 
 var users = require('./users/users.routes.js')
 app.use('/api/users', users)
+
+
+
+app.get('/api/search/:idCity', async (req, res) => {
+    try {
+      const { idCity } = req.params;
+      const response = await axios.get('https://nominatim.openstreetmap.org/search', {
+        params: {
+            city: idCity,
+            country: 'France',
+            format: 'json',
+        },
+      });
+      const { lat, lon } = response.data[0];
+      res.json({ lat, lon });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: 'An error occurred' });
+    }
+  });
+
+  
 
 app.use(cors({
     origin: "*",
